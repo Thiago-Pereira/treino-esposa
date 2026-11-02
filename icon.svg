@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a1224"/>
+      <stop offset="100%" stop-color="#0f0d17"/>
+    </linearGradient>
+    <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fb7185"/>
+      <stop offset="100%" stop-color="#f43f5e"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)"/>
+  <circle cx="256" cy="256" r="180" fill="none" stroke="rgba(251, 113, 133, 0.2)" stroke-width="8"/>
+  <!-- Ícone estilizado haltere + brilho -->
+  <g transform="translate(256, 256) rotate(-25) translate(-256, -256)">
+    <!-- Barra central -->
+    <rect x="180" y="240" width="152" height="32" rx="10" fill="url(#roseGrad)"/>
+    <!-- Anilha interna esquerda -->
+    <rect x="150" y="196" width="30" height="120" rx="14" fill="#fb7185"/>
+    <!-- Anilha externa esquerda -->
+    <rect x="120" y="216" width="24" height="80" rx="10" fill="#f43f5e"/>
+    <!-- Trava esquerda -->
+    <rect x="106" y="244" width="14" height="24" rx="4" fill="#fda4af"/>
+    <!-- Anilha interna direita -->
+    <rect x="332" y="196" width="30" height="120" rx="14" fill="#fb7185"/>
+    <!-- Anilha externa direita -->
+    <rect x="368" y="216" width="24" height="80" rx="10" fill="#f43f5e"/>
+    <!-- Trava direita -->
+    <rect x="392" y="244" width="14" height="24" rx="4" fill="#fda4af"/>
+  </g>
+  <!-- Estrelas de brilho -->
+  <path d="M 370 120 Q 370 145 395 145 Q 370 145 370 170 Q 370 145 345 145 Q 370 145 370 120 Z" fill="#fb7185"/>
+  <path d="M 140 370 Q 140 385 155 385 Q 140 385 140 400 Q 140 385 125 385 Q 140 385 140 370 Z" fill="#fda4af"/>
+</svg>

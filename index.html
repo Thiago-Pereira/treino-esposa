@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Treino & Definição Feminina</title>
+  
+  <!-- Configurações PWA e iOS Web App -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Treino">
+  <meta name="theme-color" content="#110d1a">
+
+  <style>
+    :root {
+      --bg: #0f0d17;
+      --card-bg: #1a1626;
+      --card-sub: #272238;
+      --primary: #fb7185;
+      --primary-hover: #f43f5e;
+      --primary-glow: rgba(251, 113, 133, 0.22);
+      --accent: #34d399;
+      --accent-glow: rgba(52, 211, 153, 0.2);
+      --magenta: #f43f5e;
+      --purple-accent: #c084fc;
+      --warning: #fbbf24;
+      --text: #fdf2f4;
+      --text-muted: #a79fb4;
+      --border: #352f4a;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 95px;
+      padding-top: env(safe-area-inset-top);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1f182e 0%, #110d1a 100%);
+      padding: 20px 16px 12px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .badge {
+      background: var(--primary-glow);
+      color: var(--primary);
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      border: 1px solid rgba(251, 113, 133, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Navegação por abas */
+    .tabs-nav {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .tabs-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      background: var(--card-sub);
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #f43f5e 0%, #fb7185 100%);
+      color: #0f0d17;
+      font-weight: 800;
+      box-shadow: 0 2px 10px rgba(244, 63, 94, 0.35);
+    }
+
+    /* Container Principal */
+    main {
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards */
+    .card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .card-subtitle {
+      font-size: 0.82rem;
+      color: var(--primary);
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    .tag-time {
+      background: rgba(251, 113, 133, 0.15);
+      color: var(--primary);
+      font-size: 0.75rem;
+      padding: 4px 9px;
+      border-radius: 8px;
+      font-weight: 700;
+      border: 1px solid rgba(251, 113, 133, 0.25);
+    }
+
+    /* Exercícios */
+    .exercise-item {
+      background: var(--card-sub);
+      border-radius: 12px;
+      padding: 13px;
+      margin-bottom: 10px;
+      border-left: 4px solid var(--primary);
+      transition: transform 0.15s ease;
+    }
+
+    .exercise-item.biset {
+      border-left-color: #c084fc;
+      background: linear-gradient(90deg, rgba(192, 132, 252, 0.12) 0%, var(--card-sub) 100%);
+    }
+
+    .exercise-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .exercise-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #fff;
+    }
+
+    .exercise-sets {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(15, 13, 23, 0.7);
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(251, 113, 133, 0.2);
+    }
+
+    .exercise-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .exercise-tips {
+      font-size: 0.78rem;
+      color: #f3e8ff;
+      background: rgba(15, 13, 23, 0.5);
+      padding: 6px 10px;
+      border-radius: 8px;
+      border-left: 2px solid var(--warning);
+      margin-top: 4px;
+    }
+
+    /* Checkboxes de Séries */
+    .sets-tracker {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    }
+
+    .set-check-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .set-bubble {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .set-bubble:active {
+      transform: scale(0.9);
+    }
+
+    .set-bubble.done {
+      background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+      border-color: #34d399;
+      color: #062b1b;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    /* Timer Flutuante */
+    .timer-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 13, 23, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 200;
+      box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .timer-display {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    .timer-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-timer {
+      background: var(--card-sub);
+      color: #fff;
+      border: 1px solid var(--border);
+      padding: 7px 11px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-timer:active {
+      transform: scale(0.95);
+    }
+
+    .btn-timer.primary {
+      background: linear-gradient(135deg, #f43f5e 0%, #fb7185 100%);
+      color: #0f0d17;
+      border: none;
+      font-weight: 800;
+    }
+
+    /* Cronograma Tabela */
+    .schedule-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+
+    .schedule-table th, .schedule-table td {
+      padding: 10px 8px;
+      font-size: 0.84rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .schedule-table th {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .highlight-day {
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .pill-rest {
+      color: #716982;
+      font-size: 0.75rem;
+    }
+
+    .pill-cardio {
+      color: #c084fc;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .pill-train {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    /* Timeline Cardio */
+    .timeline-step {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 16px;
+    }
+
+    .timeline-step::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 4px;
+      bottom: -16px;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .timeline-step:last-child::before {
+      display: none;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 3px solid var(--bg);
+    }
+
+    .timeline-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .reset-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .reset-btn:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Caixa de Destaque */
+    .callout-box {
+      background: rgba(244, 63, 94, 0.08);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    .callout-title {
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .callout-text {
+      font-size: 0.82rem;
+      color: #f3e8ff;
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-top">
+      <h1>🌸 Treino & Definição</h1>
+      <span class="badge">✨ Foco & Consistência</span>
+    </div>
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="openTab('cronograma')">📅 Cronograma</button>
+      <button class="tab-btn" onclick="openTab('treinoA')">🍑 Treino A (Glúteos)</button>
+      <button class="tab-btn" onclick="openTab('treinoB')">💪 Treino B (Superiores)</button>
+      <button class="tab-btn" onclick="openTab('treinoC')">🦵 Treino C (Pernas & Core)</button>
+      <button class="tab-btn" onclick="openTab('cardio')">🚶‍♀️ Cardio & Passos</button>
+      <button class="tab-btn" onclick="openTab('dicas')">💡 Dicas</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ABA: CRONOGRAMA -->
+    <div id="cronograma" class="tab-content active">
+      <div class="callout-box">
+        <div class="callout-title">💖 Rotina Rápida: Direto ao Ponto</div>
+        <div class="callout-text">
+          Nos dias de musculação, o foco é <strong>100% no treino (~40 min) e ir embora!</strong> Você não precisa perder tempo na esteira pós-treino. A musculação intensa já queima calorias e mantém o metabolismo acelerado o dia todo.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Sua Rotina Semanal</div>
+            <div class="card-subtitle">3x Musculação (~40 min) + Cardio Flexível Sem Pressa</div>
+          </div>
+        </div>
+
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>Dia</th>
+              <th>Atividade</th>
+              <th>Duração</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="highlight-day">Segunda</td>
+              <td><span class="pill-train">🍑 Treino A (Glúteos & Posteriores)</span></td>
+              <td>40 min cravados</td>
+            </tr>
+            <tr>
+              <td class="highlight-day">Terça</td>
+              <td><span class="pill-cardio">🚶‍♀️ Passos do dia a dia / Ativação leve</span></td>
+              <td>Livre</td>
+            </tr>
+            <tr>
+              <td class="highlight-day">Quarta</td>
+              <td><span class="pill-train">💪 Treino B (Superiores & Cintura)</span></td>
+              <td>40 min cravados</td>
+            </tr>
+            <tr>
+              <td style="color: var(--text-muted);">Quinta</td>
+              <td><span class="pill-rest">😴 Descanso Total</span></td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td class="highlight-day">Sexta</td>
+              <td><span class="pill-train">🦵 Treino C (Pernas & Abdômen)</span></td>
+              <td>40-45 min</td>
+            </tr>
+            <tr>
+              <td class="highlight-day">Sábado</td>
+              <td><span class="pill-cardio">🌿 Passeio ao ar livre ou Descanso</span></td>
+              <td>Opcional</td>
+            </tr>
+            <tr>
+              <td style="color: var(--text-muted);">Domingo</td>
+              <td><span class="pill-rest">😴 Descanso Total</span></td>
+              <td>-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom: 8px;">🎯 3 Regras de Ouro</div>
+        <ul style="font-size: 0.85rem; color: #cbd5e1; padding-left: 18px; line-height: 1.6;">
+          <li><strong>Consistência vence intensidade:</strong> Fazer os 3 treinos toda semana vale 10x mais do que tentar ir 6 dias e desistir depois de duas semanas.</li>
+          <li><strong>Pausas de 60 a 90s:</strong> Use o cronômetro para manter o ritmo sem esfriar nem prolongar o tempo de academia.</li>
+          <li><strong>O cardio deve ser amigável:</strong> Se odeia correr, faça caminhada com inclinação assistindo série ou ouvindo música/podcast!</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ABA: TREINO A -->
+    <div id="treinoA" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Treino A — Glúteos & Posteriores</div>
+            <div class="card-subtitle">Foco em empinar o glúteo e tonificar a parte de trás da coxa</div>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <span class="tag-time">~40 min</span>
+            <button class="reset-btn" onclick="resetCheckboxes('treinoA')">Resetar</button>
+          </div>
+        </div>
+
+        <!-- Ex 1 -->
+        <div class="exercise-item">
+          <div class="exercise-header">
+            <span class="exercise-name">1. Elevação Pélvica (Hip Thrust)</span>
+            <span class="exercise-sets">3 x 10 a 12</span>
+          </div>
+          <div class="exercise-desc">O melhor exercício para empinar e construir glúteos. Apoie as costas no banco, apoie a barra/halter no quadril e empurre para cima.</div>
+          <div class="exercise-tips">💡 Segure 1 a 2 segundos contraindo forte o bumbum no topo antes de descer devagar.</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Séries:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+        <!-- Ex 2 -->
+        <div class="exercise-item">
+          <div class="exercise-header">
+            <span class="exercise-name">2. RDL / Stiff com Halteres</span>
+            <span class="exercise-sets">3 x 10 a 12</span>
+          </div>
+          <div class="exercise-desc">Desenha o posterior da coxa e a curva inferior do glúteo. Joelhos levemente destravados, empurre o bumbum para trás descendo os halteres rente às pernas.</div>
+          <div class="exercise-tips">💡 Coluna sempre retinha e peito aberto. Você deve sentir alongar a parte de trás da coxa.</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Séries:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+        <!-- Ex 3 -->
+        <div class="exercise-item">
+          <div class="exercise-header">
+            <span class="exercise-name">3. Mesa ou Cadeira Flexora</span>
+            <span class="exercise-sets">3 x 12</span>
+          </div>
+          <div class="exercise-desc">Isolamento para desenhar e queimar gordura localizada na parte de trás da coxa. Puxe com firmeza e controle a volta.</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Séries:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+        <!-- Ex 4 -->
+        <div class="exercise-item">
+          <div class="exercise-header">
+            <span class="exercise-name">4. Agachamento Búlgaro (ou Afundo)</span>
+            <span class="exercise-sets">3 x 10 cada perna</span>
+          </div>
+          <div class="exercise-desc">Um pé à frente e o de trás apoiado no banco. Inclinar o tronco levemente à frente transfere todo o estímulo direto para o glúteo.</div>
+          <div class="exercise-tips">💡 Desça controlando. Excelente exercício para queimar calorias e corrigir assimetrias.</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Séries:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+        <!-- Ex 5 Bi-set -->
+        <div class="exercise-item biset">
+          <div class="exercise-header">
+            <span class="exercise-name">5. 🔥 BI-SET: Cadeira Abdutora + Elevação Pélvica Solo</span>
+            <span class="exercise-sets">3 x 15 cada</span>
+          </div>
+          <div class="exercise-desc"><strong>Como fazer:</strong> Faça 15 repetições na Cadeira Abdutora (incline o tronco para a frente para pegar mais glúteo médio) ➔ Vá direto ao colchonete e faça 15 Elevações Pélvicas apenas com o peso do corpo ➔ Descanse 60s.</div>
+          <div class="exercise-tips">💡 Dá o desenho arredondado na lateral do quadril e ativa a queima metabólica final!</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Ciclos:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ABA: TREINO B -->
+    <div id="treinoB" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Treino B — Superiores, Postura & Cintura</div>
+            <div class="card-subtitle">Costas alinhadas, ombros definidos e braços firmes</div>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <span class="tag-time">~40 min</span>
+            <button class="reset-btn" onclick="resetCheckboxes('treinoB')">Resetar</button>
+          </div>
+        </div>
+
+        <div class="callout-box" style="margin-bottom: 12px;">
+          <div class="callout-title">✨ Por que treinar superiores afina a cintura?</div>
+          <div class="callout-text">
+            Fortalecer costas e ombros melhora a postura, abre o peito e cria a proporção visual que faz a cintura parecer menor, além de queimar muita gordura!
+          </div>
+        </div>
+
+        <!-- Ex 1 -->
+        <div class="exercise-item">
+          <div class="exercise-header">
+            <span class="exercise-name">1. Puxada Alta na Polia (Lat Pulldown)</span>
+            <span class="exercise-sets">3 x 10 a 12</span>
+          </div>
+          <div class="exercise-desc">Trabalha as costas e postura. Puxe a barra em direção ao início do peito trazendo os cotovelos para baixo.</div>
+          <div class="exercise-tips">💡 Pense em esmagar as escápulas atrás; evite jogar o corpo para trás no movimento.</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Séries:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+        <!-- Ex 2 -->
+        <div class="exercise-item">
+          <div class="exercise-header">
+            <span class="exercise-name">2. Remada Baixa na Polia (Triângulo)</span>
+            <span class="exercise-sets">3 x 12</span>
+          </div>
+          <div class="exercise-desc">Elimina dores nas costas e melhora a postura ereta. Puxe o triângulo contra o umbigo mantendo a coluna alinhada.</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Séries:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+        <!-- Ex 3 -->
+        <div class="exercise-item">
+          <div class="exercise-header">
+            <span class="exercise-name">3. Desenvolvimento com Halteres</span>
+            <span class="exercise-sets">3 x 10 a 12</span>
+          </div>
+          <div class="exercise-desc">Fortalece os ombros. Sentada no banco, empurre os halteres para cima e retorne até a altura das orelhas.</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Séries:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+        <!-- Ex 4 -->
+        <div class="exercise-item">
+          <div class="exercise-header">
+            <span class="exercise-name">4. Elevação Lateral com Halteres</span>
+            <span class="exercise-sets">3 x 12 a 15</span>
+          </div>
+          <div class="exercise-desc">Dá o desenho e definição bonita dos ombros. Eleve os braços na lateral até a linha dos ombros com os cotovelos levemente dobrados.</div>
+          <div class="exercise-tips">💡 Use pesos leves (2 a 4 kg) focando no movimento controlado sem balançar o corpo.</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Séries:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+        <!-- Ex 5 Bi-set -->
+        <div class="exercise-item biset">
+          <div class="exercise-header">
+            <span class="exercise-name">5. 🔥 BI-SET: Tríceps Corda + Rosca Martelo</span>
+            <span class="exercise-sets">3 x 12 cada</span>
+          </div>
+          <div class="exercise-desc"><strong>Como fazer:</strong> Faça 12 reps de Tríceps Corda (adeus flacidez do tchauzinho) ➔ Imediatamente faça 12 reps de Rosca Martelo com halteres ➔ Descanse 60s.</div>
+          <div class="exercise-tips">💡 Eficiência máxima para deixar os braços firmes e tonificados sem perder tempo.</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Ciclos:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+        <!-- Ex 6 Core -->
+        <div class="exercise-item">
+          <div class="exercise-header">
+            <span class="exercise-name">6. Prancha Abdominal Isométrica</span>
+            <span class="exercise-sets">3 x 30 a 45s</span>
+          </div>
+          <div class="exercise-desc">Apoie nos antebraços e pontas dos pés. Mantenha o umbigo puxado para dentro para ativar o transverso abdominal (efeito cinta natural).</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Séries:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ABA: TREINO C -->
+    <div id="treinoC" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Treino C — Pernas Completas & Abdômen</div>
+            <div class="card-subtitle">Quadríceps, coxas firmes e abdômen definido</div>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <span class="tag-time">~45 min</span>
+            <button class="reset-btn" onclick="resetCheckboxes('treinoC')">Resetar</button>
+          </div>
+        </div>
+
+        <!-- Ex 1 -->
+        <div class="exercise-item">
+          <div class="exercise-header">
+            <span class="exercise-name">1. Leg Press 45° ou Horizontal</span>
+            <span class="exercise-sets">3 x 10 a 12</span>
+          </div>
+          <div class="exercise-desc">Foco em pernas e glúteos. Pés na largura do quadril na plataforma. Desça até 90° e empurre firme pelos calcanhares.</div>
+          <div class="exercise-tips">💡 Nunca trave/estale os joelhos totalmente esticados no final da subida.</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Séries:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+        <!-- Ex 2 -->
+        <div class="exercise-item">
+          <div class="exercise-header">
+            <span class="exercise-name">2. Agachamento Goblet (com Halter)</span>
+            <span class="exercise-sets">3 x 10 a 12</span>
+          </div>
+          <div class="exercise-desc">Segure um halter junto ao peito. Pés ligeiramente apontados para fora, agache empurrando os joelhos para a direção dos dedinhos dos pés.</div>
+          <div class="exercise-tips">💡 Movimento completo com excelente ativação de glúteos e queima calórica.</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Séries:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+        <!-- Ex 3 -->
+        <div class="exercise-item">
+          <div class="exercise-header">
+            <span class="exercise-name">3. Cadeira Extensora</span>
+            <span class="exercise-sets">3 x 12</span>
+          </div>
+          <div class="exercise-desc">Tonifica e desenha a parte frontal da coxa. Suba firme e desça segurando 2 segundos para queimar calorias.</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Séries:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+        <!-- Ex 4 -->
+        <div class="exercise-item">
+          <div class="exercise-header">
+            <span class="exercise-name">4. Panturrilha em Pé (Degrau ou Máquina)</span>
+            <span class="exercise-sets">3 x 15</span>
+          </div>
+          <div class="exercise-desc">Estimula a circulação sanguínea e desenha as panturrilhas. Suba na ponta dos pés, segure 1 segundo no topo e desça alongando.</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Séries:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+        <!-- Ex 5 -->
+        <div class="exercise-item">
+          <div class="exercise-header">
+            <span class="exercise-name">5. Abdominal Infra no Colchonete</span>
+            <span class="exercise-sets">3 x 15</span>
+          </div>
+          <div class="exercise-desc">Mãos embaixo do quadril para proteger a lombar. Eleve e abaixe as pernas de forma controlada sem tocar os calcanhares no chão.</div>
+          <div class="exercise-tips">💡 Foco na região da "pochete"/baixo ventre. Solte o ar ao subir as pernas.</div>
+          <div class="sets-tracker">
+            <span class="set-check-label">Séries:</span>
+            <div class="set-bubble" onclick="toggleSet(this)">1</div>
+            <div class="set-bubble" onclick="toggleSet(this)">2</div>
+            <div class="set-bubble" onclick="toggleSet(this)">3</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ABA: CARDIO -->
+    <div id="cardio" class="tab-content">
+      <div class="card">
+        <div class="card-title">🚶‍♀️ Cardio na Rotina Corrida (Sem Esteira Pós-Treino)</div>
+        <div class="card-subtitle" style="margin-bottom: 12px;">Como queimar gordura sem perder tempo na academia</div>
+        <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 16px;">
+          Se o horário é corrido, <strong>não faça cardio após o treino!</strong> Vá para a academia, faça os 40 minutos de musculação com foco e vá embora. Veja como compensar o cardio de forma prática e inteligente:
+        </p>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">Estratégia 1: O 'Cardio Invisível' (Passos Diários)</div>
+          <div style="font-size: 0.83rem; color: var(--text-muted); margin-top: 4px;">
+            • É a forma nº 1 adotada por quem não tem tempo: focar em atingir <strong>7.000 a 8.000 passos no dia</strong>.<br>
+            • Estacione o carro um pouco mais longe, use escadas, dê uma volta rápida após o almoço ou atenda ligações caminhando.<br>
+            • <em>Resultado:</em> Queima exatamente a mesma quantidade de calorias que 30 min de esteira, sem gastar nenhum minuto a mais na academia!
+          </div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">Estratégia 2: Fim de Semana Ativo (Sábado ou Domingo)</div>
+          <div style="font-size: 0.83rem; color: var(--text-muted); margin-top: 4px;">
+            • Escolha um dia mais calmo no fim de semana para fazer uma caminhada de <strong>30 minutos ao ar livre</strong>, dar uma volta no parque ou caminhar no shopping com tranquilidade.<br>
+            • Relaxa a mente, ajuda na circulação e fecha o gasto calórico da semana.
+          </div>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-dot" style="background: var(--accent);"></div>
+          <div class="timeline-title">Estratégia 3: Dia Separado (Opcional - 20 min)</div>
+          <div style="font-size: 0.83rem; color: var(--text-muted); margin-top: 4px;">
+            • Se em alguma Terça ou Quinta sobrar 20 minutinhos, uma caminhada rápida na esteira ou bike leve ouvindo podcast/música favorita é excelente, mas <strong>100% opcional</strong>.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom: 6px;">💡 Alívio de Consciência: O que Realmente Emagrece?</div>
+        <p style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.45;">
+          A musculação 3x por semana acelera o metabolismo de repouso (o corpo continua queimando calorias mesmo parada no trabalho). O que define o corpo é a <strong>musculação + comer um pouco melhor</strong>. Se não der tempo de fazer cardio nenhum, <strong>não se preocupe: os resultados virão do mesmo jeito!</strong>
+        </p>
+      </div>
+    </div>
+
+    <!-- ABA: DICAS -->
+    <div id="dicas" class="tab-content">
+      <div class="card">
+        <div class="card-title" style="margin-bottom: 10px;">🔑 Dicas Práticas para o Sucesso</div>
+
+        <div style="margin-bottom: 14px;">
+          <strong style="color: var(--primary); font-size: 0.9rem;">1. Musculação deixa musculosa demais?</strong>
+          <p style="font-size: 0.82rem; color: #cbd5e1; margin-top: 2px;">
+            Mito! Mulheres têm muito menos testosterona que homens. A musculação vai apenas queimar gordura, tonificar os músculos e deixar o corpo firme e desenhado (bumbum empinado, coxas firmes e cintura fina).
+          </p>
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <strong style="color: var(--primary); font-size: 0.9rem;">2. Carga nas primeiras 2 semanas:</strong>
+          <p style="font-size: 0.82rem; color: #cbd5e1; margin-top: 2px;">
+            Comece com pesos moderados para aprender o movimento sem dores exageradas no dia seguinte. O objetivo inicial é criar o hábito e dominar a execução.
+          </p>
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <strong style="color: var(--primary); font-size: 0.9rem;">3. Se perder um dia:</strong>
+          <p style="font-size: 0.82rem; color: #cbd5e1; margin-top: 2px;">
+            Vida real acontece! Se não deu para ir na segunda-feira, faça na terça e empurre a sequência. O importante é somar 3 treinos de força ao longo da semana.
+          </p>
+        </div>
+
+        <div>
+          <strong style="color: var(--primary); font-size: 0.9rem;">4. Hidratação e Energia:</strong>
+          <p style="font-size: 0.82rem; color: #cbd5e1; margin-top: 2px;">
+            Tenha sempre uma garrafinha de água com você. Beba pequenos goles entre as séries para manter o rendimento do início ao fim do treino.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BARRA DE CRONÔMETRO FLUTUANTE -->
+  <div class="timer-bar">
+    <div>
+      <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Descanso</div>
+      <div class="timer-display" id="timer">01:00</div>
+    </div>
+    <div class="timer-controls">
+      <button class="btn-timer" onclick="setTimer(45)">45s</button>
+      <button class="btn-timer" onclick="setTimer(60)">60s</button>
+      <button class="btn-timer" onclick="setTimer(90)">90s</button>
+      <button class="btn-timer primary" id="timerToggle" onclick="toggleTimer()">Iniciar</button>
+    </div>
+  </div>
+
+  <script>
+    // Gerenciador de Abas
+    function openTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      const target = document.getElementById(tabId);
+      if (target) {
+        target.classList.add('active');
+      }
+
+      event.currentTarget.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Marcação de Séries Concluídas (persistência no localStorage)
+    function toggleSet(element) {
+      element.classList.toggle('done');
+      saveState();
+      
+      // Ao marcar como concluído, dispara o timer de 60s automaticamente
+      if (element.classList.contains('done')) {
+        setTimer(60);
+        startTimer();
+      }
+    }
+
+    function resetCheckboxes(containerId) {
+      const container = document.getElementById(containerId);
+      if (container) {
+        container.querySelectorAll('.set-bubble').forEach(b => b.classList.remove('done'));
+        saveState();
+      }
+    }
+
+    function saveState() {
+      const states = [];
+      document.querySelectorAll('.set-bubble').forEach((b) => {
+        states.push(b.classList.contains('done'));
+      });
+      localStorage.setItem('workout_wife_sets_state', JSON.stringify(states));
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem('workout_wife_sets_state');
+      if (saved) {
+        try {
+          const states = JSON.parse(saved);
+          document.querySelectorAll('.set-bubble').forEach((b, index) => {
+            if (states[index]) b.classList.add('done');
+          });
+        } catch(e) {}
+      }
+    }
+
+    // Cronômetro de Descanso
+    let timeLeft = 60;
+    let timerInterval = null;
+    let isRunning = false;
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timeLeft / 60);
+      const secs = timeLeft % 60;
+      document.getElementById('timer').textContent = 
+        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function setTimer(seconds) {
+      pauseTimer();
+      timeLeft = seconds;
+      updateTimerDisplay();
+    }
+
+    function toggleTimer() {
+      if (isRunning) {
+        pauseTimer();
+      } else {
+        startTimer();
+      }
+    }
+
+    function startTimer() {
+      if (isRunning) return;
+      isRunning = true;
+      document.getElementById('timerToggle').textContent = "Pausar";
+      document.getElementById('timerToggle').style.background = "var(--warning)";
+      document.getElementById('timerToggle').style.color = "#0f0d17";
+
+      timerInterval = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          updateTimerDisplay();
+        } else {
+          pauseTimer();
+          alertFinished();
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      isRunning = false;
+      clearInterval(timerInterval);
+      document.getElementById('timerToggle').textContent = "Iniciar";
+      document.getElementById('timerToggle').style.background = "linear-gradient(135deg, #f43f5e 0%, #fb7185 100%)";
+      document.getElementById('timerToggle').style.color = "#0f0d17";
+    }
+
+    function playBeep() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Tom agradável (D5)
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } catch (e) {}
+    }
+
+    function alertFinished() {
+      if ('vibrate' in navigator) {
+        navigator.vibrate([200, 100, 200]);
+      }
+      playBeep();
+      document.getElementById('timer').textContent = "PRONTO!";
+      setTimeout(() => {
+        setTimer(60);
+      }, 2500);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      }
+    });
+  </script>
+</body>
+</html>
