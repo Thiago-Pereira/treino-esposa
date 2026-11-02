@@ -1011,8 +1011,9 @@
       }
     }
 
-    // Cronômetro de Descanso
+    // Cronômetro de Descanso (Baseado em timestamp real)
     let timeLeft = 60;
+    let endTime = null;
     let timerInterval = null;
     let isRunning = false;
 
@@ -1037,26 +1038,35 @@
       }
     }
 
+    function tick() {
+      if (!isRunning || !endTime) return;
+      const now = Date.now();
+      const diff = Math.ceil((endTime - now) / 1000);
+      if (diff > 0) {
+        timeLeft = diff;
+        updateTimerDisplay();
+      } else {
+        timeLeft = 0;
+        updateTimerDisplay();
+        pauseTimer();
+        alertFinished();
+      }
+    }
+
     function startTimer() {
       if (isRunning) return;
       isRunning = true;
+      endTime = Date.now() + timeLeft * 1000;
       document.getElementById('timerToggle').textContent = "Pausar";
       document.getElementById('timerToggle').style.background = "var(--warning)";
       document.getElementById('timerToggle').style.color = "#0f0d17";
 
-      timerInterval = setInterval(() => {
-        if (timeLeft > 0) {
-          timeLeft--;
-          updateTimerDisplay();
-        } else {
-          pauseTimer();
-          alertFinished();
-        }
-      }, 1000);
+      timerInterval = setInterval(tick, 250);
     }
 
     function pauseTimer() {
       isRunning = false;
+      endTime = null;
       clearInterval(timerInterval);
       document.getElementById('timerToggle').textContent = "Iniciar";
       document.getElementById('timerToggle').style.background = "linear-gradient(135deg, #f43f5e 0%, #fb7185 100%)";
@@ -1089,6 +1099,12 @@
         setTimer(60);
       }, 2500);
     }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && isRunning) {
+        tick();
+      }
+    });
 
     window.addEventListener('DOMContentLoaded', () => {
       loadState();
